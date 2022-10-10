@@ -1,7 +1,7 @@
 # package pong.model
 
-from pong.model.Config import GAME_WIDTH, GAME_HEIGHT
-from HasPosition import HasPosition
+from pong_game.model.Config import GAME_WIDTH, GAME_HEIGHT
+from pong_game.model.HasPosition import HasPosition
 """
  * A Ball for the Pong game
  * A model class
@@ -9,7 +9,6 @@ from HasPosition import HasPosition
 
 
 class Ball(HasPosition):
-
     def __init__(self) -> None:
         super().__init__()
 

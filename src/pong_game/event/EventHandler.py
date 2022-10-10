@@ -1,6 +1,6 @@
 # package pong.event
 
-from pong.event.ModelEvent import ModelEvent
+from pong_game.event.ModelEvent import ModelEvent
 from abc import ABC, abstractmethod
 
 """

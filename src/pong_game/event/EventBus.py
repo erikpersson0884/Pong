@@ -1,7 +1,7 @@
 # package pong.event
 
-from pong.event.EventHandler import EventHandler
-from pong.event.ModelEvent import ModelEvent
+from pong_game.event.EventHandler import EventHandler
+from pong_game.event.ModelEvent import ModelEvent
 
 
 # Service to send events **from model** to GUI

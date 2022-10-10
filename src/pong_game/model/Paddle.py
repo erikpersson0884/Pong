@@ -1,7 +1,7 @@
 # package pong.model
 
-from pong.model.Config import GAME_HEIGHT
-from HasPosition import HasPosition
+from pong_game.model.Config import GAME_HEIGHT
+from pong_game.model.HasPosition import HasPosition
 
 # A Paddle for the Pong game
 class Paddle(HasPosition):

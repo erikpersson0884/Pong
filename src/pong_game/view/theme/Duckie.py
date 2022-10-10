@@ -1,7 +1,7 @@
 # package pong.view.theme
 
-from pong.model.Ball import Ball
-from pong.view.Assets import Assets
+from pong_game.model.Ball import Ball
+from pong_game.view.Assets import Assets
 
 """
    Specific theme
@@ -10,12 +10,12 @@ from pong.view.Assets import Assets
 """
 
 
-class Cool(Assets):
+class Duckie(Assets):
     # ------------ Handling Images ------------------------
 
-    background = Assets.get_image("coolBg.png")
+    background = Assets.get_image("duckieBg.jpg")
 
-    Assets.bind(Ball, "coolBall.png")
+    Assets.bind(Ball, "duckieBall.png")
 
     @classmethod
     def get_background(cls):

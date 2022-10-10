@@ -2,19 +2,20 @@
 import pygame 
 import time
 
+from pong_game.model import *
+from pong_game.event.ModelEvent import ModelEvent
+from pong_game.event.EventBus import EventBus
+from pong_game.event.EventHandler import EventHandler
+from pong_game.view.theme.Cool import Cool
+from pong_game.view.theme.Duckie import Duckie
 
-from pong.model import *
-from pong.event.ModelEvent import ModelEvent
-from pong.event.EventBus import EventBus
-from pong.event.EventHandler import EventHandler
-from pong.view.theme.Cool import Cool
-from pong.view.theme.Duckie import Duckie
+from pong_game.model.Paddle import Paddle
+from pong_game.model.Config import *
 
-from pong.model.Paddle import Paddle
-from pong.model.Config import *
+from pong_game.model.Ball import Ball
+from pong_game.model.Paddle import Paddle
 
-from pong.model.Ball import Ball
-from pong.model.Paddle import Paddle
+from pong_game.model.Pong import Pong
 
 pygame.init()
 
@@ -122,7 +123,8 @@ class PongGUI:
     @classmethod
     def render(cls):
         cls.__draw_background()
-        
+        cls.__draw_ball()
+        cls.__draw_paddle()
 
 
         cls.__update_screen()
@@ -143,6 +145,14 @@ class PongGUI:
         screen = pygame.display.set_mode(size)
         screen.blit(bg, (0, 0))
 
+    @classmethod
+    def __draw_paddle(cls): 
+        pass
+    @classmethod
+    def __draw_ball(cls):
+        pass
+
+    #@classmethod
     # def __show_points(self):
     #     points = self.ctr_model.get_points()
     #     img, rect = self.__create_points_image(points)
@@ -189,6 +199,9 @@ class PongGUI:
         ball = Ball
         paddle_right = Paddle
         paddle_left = Paddle
+
+        pong_model = Pong(ball, paddle_right, paddle_left)
+
         keep_going = True
         while keep_going:
             cls.clock.tick(GAME_SPEED)

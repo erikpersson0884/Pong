@@ -1,10 +1,10 @@
 # package pong.model
 
-import pong.event.ModelEvent
-import pong.event.EventBus
+import pong_game.event.ModelEvent
+import pong_game.event.EventBus
 
-from pong.model.Ball import Ball
-from pong.model.Paddle import Paddle
+from pong_game.model.Ball import Ball
+from pong_game.model.Paddle import Paddle
 
 
 class Pong:
