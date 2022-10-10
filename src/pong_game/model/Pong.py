@@ -18,21 +18,32 @@ class Pong:
     points_right = 0
 
     # TODO Initialization
-    def __init__(self, ball: Ball, paddle_left: Paddle, paddle_right: Paddle):
-        self.ball = ball
-        self.paddle_left = paddle_left
-        self.paddle_right = paddle_right
+    def __init__(self, ball, paddle_left, paddle_right):
+        self.__ball: Ball = ball
+        self.__paddle_left: Paddle = paddle_left
+        self.__paddle_right: Paddle = paddle_right
         pass
 
     # --------  Game Logic -------------
 
     timeForLastHit = 0         # To avoid multiple collisions
 
-    @classmethod
-    def update(cls, now):
-        pass
+    def update(self, now):
+        self.__move_the_ball()
+        self.__move_the_left_paddle()
+        self.__move_the_right_paddle()
         # TODO Game logic here
-
+    
+    def __move_the_left_paddle(self):
+        #if
+        self.__paddle_left.move()
+    def __move_the_right_paddle(self):
+        #if
+        self.__paddle_right.move()
+        
+    def __move_the_ball(self):
+        self.__ball.move() 
+        
     # --- Used by GUI  ------------------------
     @classmethod
     def get_all_items_with_position(cls):

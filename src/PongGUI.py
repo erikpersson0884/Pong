@@ -33,6 +33,14 @@ class PongGUI:
     clock = pygame.time.Clock()
     running = False    # Is game running? ...No?
 
+    size = ([GAME_WIDTH, GAME_HEIGHT])
+    screen = pygame.display.set_mode(size)
+
+    ball = Ball()
+    paddle_right = Paddle(GAME_WIDTH - 20)
+    paddle_left = Paddle(10)
+
+    pong_model = Pong(ball, paddle_right, paddle_left)
 
 
     # ------- Keyboard handling ----------------------------------
@@ -40,19 +48,18 @@ class PongGUI:
     def key_pressed(cls, event):
         if not cls.running:
             return
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                # TODO
-                pass
-            elif event.key == pygame.K_DOWN:
-                # TODO
-                pass
-            elif event.key == pygame.K_q:
-                # TODO
-                pass
-            elif event.key == pygame.K_a:
-                # TODO
-                pass
+        if event.key == pygame.K_UP:
+            cls.paddle_right.set_paddle_direction(-1)
+            
+        elif event.key == pygame.K_DOWN:
+            # TODO
+            cls.paddle_right.set_paddle_direction(1)
+        elif event.key == pygame.K_q:
+            # TODO
+            cls.paddle_left.move_up()
+        elif event.key == pygame.K_a:
+            # TODO
+            cls.paddle_left.move_down()
 
     @classmethod
     def key_released(cls, event):
@@ -66,11 +73,9 @@ class PongGUI:
                 # TODO
                 pass
             elif event.key == pygame.K_q:
-                # TODO
                 pass
             elif event.key == pygame.K_a:
-                # TODO
-                pass
+                
 
     # ---- Menu handling (except themes) -----------------
 
@@ -79,6 +84,7 @@ class PongGUI:
     @classmethod
     def new_game(cls):
         # TODO rebuild OO model as needed
+        # pong_model = Pong(ball, paddle_right, paddle_left)
         pass
 
     @classmethod
@@ -126,7 +132,6 @@ class PongGUI:
         cls.__draw_ball()
         cls.__draw_paddle()
 
-
         cls.__update_screen()
         
         #screen = pygame.display.se
@@ -141,16 +146,31 @@ class PongGUI:
     def __draw_background(cls):
         bg = Cool.get_background()
 
-        size = ([GAME_WIDTH, GAME_HEIGHT])
-        screen = pygame.display.set_mode(size)
-        screen.blit(bg, (0, 0))
+        # size = ([GAME_WIDTH, GAME_HEIGHT])
+        # screen = pygame.display.set_mode(size)
+        cls.screen.blit(bg, (0, 0))
+
 
     @classmethod
-    def __draw_paddle(cls): 
-        pass
+    def __draw_paddle(cls):
+        left_paddle_surface = Cool.get_image(Cool.left_paddle_img_file)
+        left_paddle_surface = pygame.transform.scale(left_paddle_surface,
+                                             (Paddle.get_width(cls.paddle_left), Paddle.get_height(cls.paddle_left)))
+
+        right_paddle_surface = Cool.get_image(Cool.right_paddle_img_file)
+        right_paddle_surface = pygame.transform.scale(right_paddle_surface,
+                                              (Paddle.get_width(cls.paddle_right), Paddle.get_height(cls.paddle_right)))
+
+        
+        cls.screen.blit(left_paddle_surface, (cls.paddle_left.get_x(), cls.paddle_right.get_y()))
+        cls.screen.blit(right_paddle_surface, (cls.paddle_right.get_x(), cls.paddle_right.get_y()))
+
+
     @classmethod
     def __draw_ball(cls):
-        pass
+        ball = Cool.get_image("coolBall.png")
+        ball = pygame.transform.scale(ball, (Ball.get_width(cls.ball), Ball.get_height(cls.ball)))
+        cls.screen.blit(ball, (cls.ball.get_x(), cls.ball.get_y()))
 
     #@classmethod
     # def __show_points(self):
@@ -205,27 +225,16 @@ class PongGUI:
         keep_going = True
         while keep_going:
             cls.clock.tick(GAME_SPEED)
-            cls.update()
             keep_going = cls.handle_events()
+            cls.update()
         pygame.quit()
-
-
-        # keep_going = True
-        # while keep_going:
-            #self.clock.tick(GAME_SPEED)
-            # self.update()
-            # keep_going = self.handle_events()
-        # pg.quit()
 
     @classmethod
     def update(cls):
         # TODO
+        # cls.handle_events()
         cls.render()
-
         
-        # self.ctr_model.update(time_ns())
-        # self.render()
-        pass
 
     @classmethod
     def handle_events(cls):
@@ -235,6 +244,10 @@ class PongGUI:
 
         for event in events:
             keep_going = cls.__check_for_quit(event)
+            if event.type == pygame.KEYDOWN:
+                cls.key_pressed(event)
+            elif event.type == pygame.KEYUP:
+                cls.key_released(event)
 
         return keep_going
 
@@ -250,9 +263,6 @@ class PongGUI:
     def __check_for_quit(event) -> bool:
         return event.type != pygame.QUIT
 
-    @classmethod
-    def handle_key_event(cls):
-        pass
 
 
 if __name__ == "__main__":
