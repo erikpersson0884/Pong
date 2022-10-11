@@ -39,11 +39,18 @@ class Assets(ABC):
 
     # -------------- Methods binding objects/classes to assets -----------------
 
+    # @classmethod
+    # def bind(cls, obj, image_file_name):
+        # i = cls.get_image(image_file_name)
+        # if i is not None:
+            # cls.object_image_map.update(obj=i)
+        # else:
+            # raise ValueError("Missing image: " + cls.IMAGE_DIR + image_file_name)
     @classmethod
     def bind(cls, obj, image_file_name):
         i = cls.get_image(image_file_name)
         if i is not None:
-            cls.object_image_map.update(obj=i)
+            cls.object_image_map.update([(obj, i)])
         else:
             raise ValueError("Missing image: " + cls.IMAGE_DIR + image_file_name)
 

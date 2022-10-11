@@ -67,7 +67,7 @@ b. Decide which data (instance variables) and methods needed in Ball and Paddle.
    TIP: Use upper left corner as position. Will simplify.
    NOTE: y-axis is pointing down!
    TIP: Use dx, dy for speed. When dx = dy = 0 object is idle.
-   NOTE: Anything you intend to draw on screen must implement interface IPositionable
+   NOTE: Anything you intend to draw on screen must implement interface HasPosition
 
 c. If needed, create some test for the classes in test/pong directory. Or
    do it later when needed.
@@ -96,7 +96,7 @@ a.  Add checks, in update(), to create a new ball if the actual escapes. Also
 5.  Make paddles move and add collision detection for ball and paddles. No redundancy
     for collision detection, should be done in one place and one place only.
 
-6.  Add event handling from model to GUI, using Event and EventService. If a collision
+6.  Add event handling from model to GUI, using ModelEvent and EventHandler. If a collision
     occurs in model send an event to GUI to inform GUI to play a sound.
 
 7. (Optional) Add a game menu, allowing players to start a new game, change theme, or

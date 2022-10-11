@@ -13,6 +13,9 @@ class Paddle(HasPosition):
         self.__y = self.__get_beginning_y()
         self.__direction = 0
         self.__SPEED = 5
+    
+    def __get_beginning_y(self) -> int:
+        return int(GAME_HEIGHT / 2 - self.__HEIGHT / 2)
 
     def get_x(self) -> int:
         return self.__x
@@ -29,12 +32,22 @@ class Paddle(HasPosition):
     def get_paddle_direction(self):
         return self.__direction
 
-    def set_paddle_direction(self, direction:int):
+    def set_paddle_direction(self, direction: int):
         self.__direction = direction
 
     def move(self):
-        if  0 < self.__y < GAME_HEIGHT:
+        if self.__direction == -1 and 0 < self.__y:
             self.__y += self.__direction * self.__SPEED
+            # print(self)
 
-    def __get_beginning_y(self) -> int:
-        return int(GAME_HEIGHT / 2 - self.__HEIGHT / 2)
+        elif self.__direction == 1 and self.__y < GAME_HEIGHT - self.get_height():
+            self.__y += self.__direction * self.__SPEED 
+    
+            
+    def set_direction(self, direction: int):
+        self.__direction = direction
+
+    def stop(self):
+        self.set_direction(0)
+
+

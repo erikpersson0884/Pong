@@ -1,6 +1,6 @@
 # package pong.view
 import pygame 
-import time
+from time import time_ns
 
 from pong_game.model import *
 from pong_game.event.ModelEvent import ModelEvent
@@ -30,66 +30,69 @@ class PongGUI:
     See: https://en.wikipedia.org/wiki/Pong
     """
 
-    clock = pygame.time.Clock()
-    running = False    # Is game running? ...No?
+    
+    running = True    # Is game running? ...No?
 
     size = ([GAME_WIDTH, GAME_HEIGHT])
     screen = pygame.display.set_mode(size)
 
-    ball = Ball()
-    paddle_right = Paddle(GAME_WIDTH - 20)
-    paddle_left = Paddle(10)
-
-    pong_model = Pong(ball, paddle_right, paddle_left)
-
+    def __init__(self) -> None:
+        self.ball = Ball()
+        self.paddle_right = Paddle(GAME_WIDTH - 20)
+        self.paddle_left = Paddle(10)
+        self.pong_model = Pong(self.ball, self.paddle_left, self.paddle_right)
+        self.points_font = pygame.font.SysFont(None, 36)
+        self.clock = pygame.time.Clock()
 
     # ------- Keyboard handling ----------------------------------
-    @classmethod
-    def key_pressed(cls, event):
-        if not cls.running:
+
+    def key_pressed(self, event):
+        if not self.running:
             return
         if event.key == pygame.K_UP:
-            cls.paddle_right.set_paddle_direction(-1)
+            self.pong_model.move_the_paddle(-1, "right")
             
         elif event.key == pygame.K_DOWN:
-            # TODO
-            cls.paddle_right.set_paddle_direction(1)
-        elif event.key == pygame.K_q:
-            # TODO
-            cls.paddle_left.move_up()
-        elif event.key == pygame.K_a:
-            # TODO
-            cls.paddle_left.move_down()
+            self.pong_model.move_the_paddle(1, "right")
 
-    @classmethod
-    def key_released(cls, event):
-        if not cls.running:
+        elif event.key == pygame.K_q:
+            self.pong_model.move_the_paddle(-1, "left")
+
+        elif event.key == pygame.K_a:
+            self.pong_model.move_the_paddle(1, "left")
+
+
+    def key_released(self, event):
+        if not self.running:
             return
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
-                # TODO
-                pass
-            elif event.key == pygame.K_DOWN:
-                # TODO
-                pass
-            elif event.key == pygame.K_q:
-                pass
-            elif event.key == pygame.K_a:
-                
+        if event.key == pygame.K_UP:
+            self.pong_model.move_the_paddle(0, "right")
+
+        elif event.key == pygame.K_DOWN:
+            self.pong_model.move_the_paddle(0, "right")
+
+        elif event.key == pygame.K_q:
+            self.pong_model.move_the_paddle(0, "left")
+    
+        elif event.key == pygame.K_a:
+            self.pong_model.move_the_paddle(0, "left")
+    
+    # move_up:
+        # y -= speed
+
 
     # ---- Menu handling (except themes) -----------------
 
     # TODO Optional
 
-    @classmethod
-    def new_game(cls):
+    def new_game(self):
         # TODO rebuild OO model as needed
         # pong_model = Pong(ball, paddle_right, paddle_left)
         pass
 
-    @classmethod
-    def kill_game(cls):
-        cls.running = False
+
+    def kill_game(self):
+        self.running = False
         # TODO kill all aspects of game
 
     # -------- Event handling (events sent from model to GUI) ------------
@@ -111,28 +114,27 @@ class PongGUI:
 
     assets = None
 
-    @classmethod
-    def handle_theme(cls, menu_event):
+    def handle_theme(self, menu_event):
         s = "Cool"  # ((MenuItem) menu_event.getSource()).getText()
-        last_theme = cls.assets
+        last_theme = self.assets
         try:
             if s == "Cool":
-                cls.assets = Cool()
+                self.assets = Cool()
             elif s == "Duckie":
-                cls.assets = Duckie()
+                self.assets = Duckie()
             else:
                 raise ValueError("No such assets " + s)
         except IOError as ioe:
-            cls.assets = last_theme
+            self.assets = last_theme
 
     # ---------- Rendering -----------------
-    @classmethod
-    def render(cls):
-        cls.__draw_background()
-        cls.__draw_ball()
-        cls.__draw_paddle()
+    def render(self):
+        self.__draw_background()
+        self.__draw_ball()
+        self.__draw_paddle()
+        self.__show_points()
 
-        cls.__update_screen()
+        self.__update_screen()
         
         #screen = pygame.display.se
         # self.__draw_background()
@@ -141,38 +143,47 @@ class PongGUI:
         # self.__draw_bucket()
         # self.__draw_drops()
         # self.__update_screen()
+        
+    def __show_points(self):
+        points = self.pong_model.get_points_left()
+        img, rect = self.__create_points_image(points)
+        self.__draw_points_image(img, rect)
 
-    @classmethod
-    def __draw_background(cls):
+    def __draw_points_image(self, img, rect):
+        rect.topleft = (20, 20)
+        self.screen.blit(img, rect)
+
+    def __create_points_image(self, points):
+        text = f"Points: {points}"
+        RED = (255, 0, 0)
+        img = self.points_font.render(text, True, RED)
+        rect = img.get_rect()
+        return img, rect
+
+    def __draw_background(self):
         bg = Cool.get_background()
+        bg = pygame.transform.scale(bg, (600, 400))
+        self.screen.blit(bg, (0, 0))
 
-        # size = ([GAME_WIDTH, GAME_HEIGHT])
-        # screen = pygame.display.set_mode(size)
-        cls.screen.blit(bg, (0, 0))
-
-
-    @classmethod
-    def __draw_paddle(cls):
+    def __draw_paddle(self):
         left_paddle_surface = Cool.get_image(Cool.left_paddle_img_file)
         left_paddle_surface = pygame.transform.scale(left_paddle_surface,
-                                             (Paddle.get_width(cls.paddle_left), Paddle.get_height(cls.paddle_left)))
+                                             (Paddle.get_width(self.paddle_left), Paddle.get_height(self.paddle_left)))
 
         right_paddle_surface = Cool.get_image(Cool.right_paddle_img_file)
         right_paddle_surface = pygame.transform.scale(right_paddle_surface,
-                                              (Paddle.get_width(cls.paddle_right), Paddle.get_height(cls.paddle_right)))
+                                              (Paddle.get_width(self.paddle_right), Paddle.get_height(self.paddle_right)))
 
         
-        cls.screen.blit(left_paddle_surface, (cls.paddle_left.get_x(), cls.paddle_right.get_y()))
-        cls.screen.blit(right_paddle_surface, (cls.paddle_right.get_x(), cls.paddle_right.get_y()))
+        self.screen.blit(left_paddle_surface, (self.paddle_left.get_x(), self.paddle_left.get_y()))
+        self.screen.blit(right_paddle_surface, (self.paddle_right.get_x(), self.paddle_right.get_y()))
 
 
-    @classmethod
-    def __draw_ball(cls):
-        ball = Cool.get_image("coolBall.png")
-        ball = pygame.transform.scale(ball, (Ball.get_width(cls.ball), Ball.get_height(cls.ball)))
-        cls.screen.blit(ball, (cls.ball.get_x(), cls.ball.get_y()))
+    def __draw_ball(self):
+        ball_surface = Cool.get_image("coolBall.png")
+        ball_surface = pygame.transform.scale(ball_surface, (Ball.get_width(self.ball), Ball.get_height(self.ball)))
+        self.screen.blit(ball_surface, (self.ball.get_x(), self.ball.get_y()))
 
-    #@classmethod
     # def __show_points(self):
     #     points = self.ctr_model.get_points()
     #     img, rect = self.__create_points_image(points)
@@ -214,40 +225,32 @@ class PongGUI:
         #self.screen.fill(self.WHITE)
     # ---------- Game loop ----------------
 
-    @classmethod
-    def run(cls):
-        ball = Ball
-        paddle_right = Paddle
-        paddle_left = Paddle
-
-        pong_model = Pong(ball, paddle_right, paddle_left)
-
+    def run(self):
         keep_going = True
         while keep_going:
-            cls.clock.tick(GAME_SPEED)
-            keep_going = cls.handle_events()
-            cls.update()
+            self.clock.tick(GAME_SPEED)
+            keep_going = self.handle_events()
+            self.update()
+            
         pygame.quit()
-
-    @classmethod
-    def update(cls):
-        # TODO
-        # cls.handle_events()
-        cls.render()
         
-
-    @classmethod
-    def handle_events(cls):
+    def update(self):
+        # TODO
+        self.pong_model.update(time_ns())
+        self.render()
+        
+    def handle_events(self):
         # TODO
         keep_going = True
         events = pygame.event.get()
 
         for event in events:
-            keep_going = cls.__check_for_quit(event)
+            keep_going = self.__check_for_quit(event)
             if event.type == pygame.KEYDOWN:
-                cls.key_pressed(event)
+                self.key_pressed(event)
+
             elif event.type == pygame.KEYUP:
-                cls.key_released(event)
+                self.key_released(event)
 
         return keep_going
 
@@ -266,4 +269,6 @@ class PongGUI:
 
 
 if __name__ == "__main__":
-    PongGUI.run()
+    gui = PongGUI()
+    gui.run()
+    #PongGUI.run()
