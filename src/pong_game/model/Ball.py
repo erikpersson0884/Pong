@@ -33,7 +33,6 @@ class Ball(HasPosition):
 
     def __get_start_dx(self):
         dx = choice([uniform(-1, -1/sqrt(2)), uniform(1/sqrt(2), 1)])
-        print(dx)
         return dx
 
     def __get_start_dy(self):

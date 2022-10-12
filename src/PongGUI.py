@@ -30,7 +30,6 @@ class PongGUI:
     See: https://en.wikipedia.org/wiki/Pong
     """
 
-    
     running = True    # Is game running? ...No?
 
     size = ([GAME_WIDTH, GAME_HEIGHT])
@@ -41,6 +40,7 @@ class PongGUI:
         self.paddle_right = Paddle(GAME_WIDTH - 20)
         self.paddle_left = Paddle(10)
         self.pong_model = Pong(self.ball, self.paddle_left, self.paddle_right)
+        self.event_sound_handler = PongGUI.ModelEventHandler()
         self.points_font = pygame.font.SysFont(None, 36)
         self.clock = pygame.time.Clock()
 
@@ -76,9 +76,6 @@ class PongGUI:
     
         elif event.key == pygame.K_a:
             self.pong_model.move_the_paddle(0, "left")
-    
-    # move_up:
-        # y -= speed
 
 
     # ---- Menu handling (except themes) -----------------
@@ -103,7 +100,7 @@ class PongGUI:
                 # TODO Optional
                 pass
             elif evt.event_type == ModelEvent.EventType.BALL_HIT_PADDLE:
-                PongGUI.assets.ball_hit_paddle_sound.play()
+                PongGUI.assets.get_ball_hit_paddle_sound().play()
             elif evt.event_type == ModelEvent.EventType.BALL_HIT_WALL_CEILING:
                 # TODO Optional
                 pass
@@ -133,30 +130,29 @@ class PongGUI:
         self.__draw_ball()
         self.__draw_paddle()
         self.__show_points()
-
         self.__update_screen()
         
-        #screen = pygame.display.se
-        # self.__draw_background()
-        # self.__show_points()
-        # self.__draw_ground()
-        # self.__draw_bucket()
-        # self.__draw_drops()
-        # self.__update_screen()
-        
     def __show_points(self):
-        points = self.pong_model.get_points_left()
-        img, rect = self.__create_points_image(points)
-        self.__draw_points_image(img, rect)
+        points_left = self.pong_model.get_points_left()
+        points_left_img, points_left_rect = self.__create_points_image(points_left, BLUE)
+        
+        points_right = self.pong_model.get_points_right()
+        points_right_img, points_right_rect = self.__create_points_image(points_right, RED)
 
-    def __draw_points_image(self, img, rect):
-        rect.topleft = (20, 20)
+        self.__draw_points_image(points_left_img, points_left_rect, 20, 20)
+        self.__draw_points_image(points_right_img, points_right_rect, GAME_WIDTH-20, 20)
+
+    def __draw_points_image(self, img, rect, x: int, y: int):
+        if x < GAME_WIDTH/2:
+            rect.topleft = (x, y)
+        else:
+            rect.topright = (x, y)
         self.screen.blit(img, rect)
 
-    def __create_points_image(self, points):
+
+    def __create_points_image(self, points, color: tuple[int, int, int]):
         text = f"Points: {points}"
-        RED = (255, 0, 0)
-        img = self.points_font.render(text, True, RED)
+        img = self.points_font.render(text, True, color)
         rect = img.get_rect()
         return img, rect
 
@@ -184,28 +180,11 @@ class PongGUI:
         ball_surface = pygame.transform.scale(ball_surface, (Ball.get_width(self.ball), Ball.get_height(self.ball)))
         self.screen.blit(ball_surface, (self.ball.get_x(), self.ball.get_y()))
 
-    # def __show_points(self):
-    #     points = self.ctr_model.get_points()
-    #     img, rect = self.__create_points_image(points)
-    #     self.__draw_points_image(img, rect)
-
-    # def __draw_points_image(self, img, rect):
-    #     rect.topleft = (20, 20)
-    #     self.screen.blit(img, rect)
-
-    # def __create_points_image(self, points):
-    #     text = f"Points: {points}"
-    #     img = self.points_font.render(text, True, self.RED) Vi borde ha: Cool.get_background()
-    #     rect = img.get_rect()
-    #     return img, rect
-
 
     
     @staticmethod
     def __update_screen():
         pygame.display.flip()
-
-
 
     #WHITE = (255, 255, 255)
     #RED   = (255,   0,   0)
@@ -219,10 +198,6 @@ class PongGUI:
         # self.points_font = pg.font.SysFont(None, 36)
         # self.clock = pg.time.Clock()    
         # TODO
-        pass
-
-
-        #self.screen.fill(self.WHITE)
     # ---------- Game loop ----------------
 
     def run(self):
@@ -237,10 +212,14 @@ class PongGUI:
     def update(self):
         # TODO
         self.pong_model.update(time_ns())
+
+        if self.pong_model.event == "ball hit paddle":
+            self.event_sound_handler.on_model_event(ModelEvent(ModelEvent.EventType.BALL_HIT_PADDLE))
+            self.pong_model.event = ""
+
         self.render()
         
     def handle_events(self):
-        # TODO
         keep_going = True
         events = pygame.event.get()
 
@@ -253,14 +232,6 @@ class PongGUI:
                 self.key_released(event)
 
         return keep_going
-
-        
-        # keep_going = True
-        # events = pg.event.get()
-        # for event in events:
-            # self.__handle_key_event(event)
-            # keep_going &= self.__check_for_quit(event)
-        # return keep_going
 
     @staticmethod
     def __check_for_quit(event) -> bool:

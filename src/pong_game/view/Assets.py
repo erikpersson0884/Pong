@@ -6,6 +6,7 @@ import pygame.color
 import pygame.image
 import pygame.mixer
 
+pygame.mixer.init()
 
 class Assets(ABC):
     """
