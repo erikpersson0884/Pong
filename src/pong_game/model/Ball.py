@@ -15,7 +15,7 @@ class Ball(HasPosition):
         super().__init__()
         self.__start_speed = 10
         
-        self.__WIDTH = 4
+        self.__WIDTH = 40
         self.__HEIGHT = 40
         self.__x: int = self.__get_start_x()
         self.__y: int = self.__get_start_y()
