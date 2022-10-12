@@ -15,10 +15,11 @@ class Ball(HasPosition):
         super().__init__()
         self.__start_speed = 10
         
-        self.__WIDTH = 40
+        self.__WIDTH = 4
         self.__HEIGHT = 40
         self.__x: int = self.__get_start_x()
         self.__y: int = self.__get_start_y()
+        self.__old_x: float = self.__x
 
         self.__dx = self.__get_start_dx()
         self.__dy = self.__get_start_dy()
@@ -44,12 +45,6 @@ class Ball(HasPosition):
     def set_dy(self, dy):
         self.__dy = dy
 
-    def move(self):
-        self.set_x(self.get_x() + self.__dx * self.__SPEED)
-        self.set_y(self.get_y() + self.__dy * self.__SPEED)
-        if 0 > self.__y or self.__y > GAME_HEIGHT - self.get_height():
-            self.__dy *= -1
-
     def set_x(self, x):
         self.__x = x
 
@@ -62,13 +57,21 @@ class Ball(HasPosition):
     def get_y(self):
         return self.__y
 
+    def get_old_x(self):
+        return self.__old_x
+
     def get_width(self):
         return self.__WIDTH
 
     def get_height(self):
         return self.__HEIGHT
 
-
+    def move(self):
+        self.__old_x = self.get_x()
+        self.set_x(self.get_x() + self.__dx * self.__SPEED)
+        self.set_y(self.get_y() + self.__dy * self.__SPEED)
+        if 0 > self.__y or self.__y > GAME_HEIGHT - self.get_height():
+            self.__dy *= -1
     
     def reset_ball_pos(self):
         self.__x = self.__get_start_x()
@@ -86,3 +89,12 @@ class Ball(HasPosition):
     
     def accelerate(self):
         self.__SPEED *= 1.05
+    
+
+
+
+
+    def get_dx(self):      # Min x and y is upper left corner (y-axis pointing down)
+        return self.__dx
+    def get_SPEED(self):      # Min x and y is upper left corner (y-axis pointing down)
+        return self.__SPEED

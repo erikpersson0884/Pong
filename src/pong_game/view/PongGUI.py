@@ -100,7 +100,9 @@ class PongGUI:
                 # TODO Optional
                 pass
             elif evt.event_type == ModelEvent.EventType.BALL_HIT_PADDLE:
-                PongGUI.assets.get_ball_hit_paddle_sound().play()
+                Cool.get_sound(Cool.ball_hit_paddle_sound_file).play()
+
+                #PongGUI.assets.get_ball_hit_paddle_sound().play()
             elif evt.event_type == ModelEvent.EventType.BALL_HIT_WALL_CEILING:
                 # TODO Optional
                 pass
@@ -170,16 +172,16 @@ class PongGUI:
         right_paddle_surface = pygame.transform.scale(right_paddle_surface,
                                               (Paddle.get_width(self.paddle_right), Paddle.get_height(self.paddle_right)))
 
-        
+
         self.screen.blit(left_paddle_surface, (self.paddle_left.get_x(), self.paddle_left.get_y()))
         self.screen.blit(right_paddle_surface, (self.paddle_right.get_x(), self.paddle_right.get_y()))
 
-
+    
     def __draw_ball(self):
         ball_surface = Cool.get_image("coolBall.png")
         ball_surface = pygame.transform.scale(ball_surface, (Ball.get_width(self.ball), Ball.get_height(self.ball)))
-        self.screen.blit(ball_surface, (self.ball.get_x(), self.ball.get_y()))
 
+        self.screen.blit(ball_surface, (self.ball.get_x(), self.ball.get_y()))
 
     
     @staticmethod
@@ -213,7 +215,7 @@ class PongGUI:
         # TODO
         self.pong_model.update(time_ns())
 
-        if self.pong_model.event == "ball hit paddle":
+        if self.pong_model.event == "ball_hit_paddle":
             self.event_sound_handler.on_model_event(ModelEvent(ModelEvent.EventType.BALL_HIT_PADDLE))
             self.pong_model.event = ""
 
@@ -239,7 +241,7 @@ class PongGUI:
 
 
 
-if __name__ == "__main__":
-    gui = PongGUI()
-    gui.run()
+#if __name__ == "__main__":
+    #gui = PongGUI()
+    #gui.run()
     #PongGUI.run()
