@@ -20,6 +20,9 @@ class Assets(ABC):
     IMAGE_DIR = "assets/img/"
     SOUND_DIR = "assets/sound/"
 
+    # För pycharm funkar "..assets/img/" and "../assets/sound/"
+    # Annars blir det FileNotFoundError: No file  found in working directory 
+
     # A Map to store which image belongs to which object
     object_image_map = {}
 
@@ -29,6 +32,9 @@ class Assets(ABC):
 
     left_paddle_img_file = "coolbluepaddle.png"
     right_paddle_img_file = "coolredpaddle.png"
+
+    duckie_ball = "duckieBall.png"
+    cool_ball = "coolBall.png"
 
     # -------------- Audio handling -----------------------------
     ball_hit_paddle_sound_file = "ballhitpaddle.wav"

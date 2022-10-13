@@ -14,15 +14,17 @@ class Cool(Assets):
     # ------------ Handling Images ------------------------
 
     background = Assets.get_image("coolBg.png")
+    ball = "coolBall.png"
 
     Assets.bind(Ball, "coolBall.png")
 
     @classmethod
     def get_background(cls):
         return cls.background
+    
 
     # -------------- Audio handling -----------------------------
-    ball_hit_paddle_sound = Assets.get_sound("ballhitpaddle.wav")
+    ball_hit_paddle_sound = "ballhitpaddle.wav"
 
     @classmethod
     def get_ball_hit_paddle_sound(cls):

@@ -25,9 +25,6 @@ class Pong:
         self.__points_left: int = 0
         self.__points_right: int = 0
         self.__last_hit: Pong.PaddleSide = Pong.PaddleSide.NONE
-        
-
-
         self.event = ""
 
 
@@ -55,8 +52,7 @@ class Pong:
     def __move_the_ball(self):
         self.__ball.move() 
 
-
-            
+          
     def check_collision_with_paddle(self):
         is_at_left_paddle = self.__ball.get_x() < self.__paddle_left.get_x() + self.__paddle_left.get_width() < self.__ball.get_old_x()
         is_at_right_paddle = self.__ball.get_old_x() + self.__ball.get_width() < self.__paddle_right.get_x() < self.__ball.get_x() + self.__ball.get_width()
@@ -86,8 +82,8 @@ class Pong:
                 self.__ball.set_x(self.__paddle_right.get_x() - self.__ball.get_width())
                 self.__ball.accelerate()
                 self.__ball.bounce()
-        
-    
+
+
     def reset_ball(self):
         self.__ball.reset_ball_pos()
         self.__ball.reset_direction()

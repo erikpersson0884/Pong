@@ -14,11 +14,18 @@ class Duckie(Assets):
     # ------------ Handling Images ------------------------
 
     background = Assets.get_image("duckieBg.jpg")
+    ball = "duckieBall.png"
 
     Assets.bind(Ball, "duckieBall.png")
+
 
     @classmethod
     def get_background(cls):
         return cls.background
 
     # -------------- Audio handling -----------------------------
+    ball_hit_paddle_sound = "ballhitpaddle.wav"
+
+    @classmethod
+    def get_ball_hit_paddle_sound(cls):
+        return cls.ball_hit_paddle_sound
