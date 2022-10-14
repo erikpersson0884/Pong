@@ -20,7 +20,9 @@ class Assets(ABC):
     IMAGE_DIR = "assets/img/"
     SOUND_DIR = "assets/sound/"
 
-    # För pycharm funkar "..assets/img/" and "../assets/sound/"
+    # För VS Code funkar IMAGE_DIR = "assets/img/" och "assets/sound/"
+
+    # För pycharm funkar "../assets/img/" and "../assets/sound/"
     # Annars blir det FileNotFoundError: No file  found in working directory 
 
     # A Map to store which image belongs to which object
@@ -46,13 +48,6 @@ class Assets(ABC):
 
     # -------------- Methods binding objects/classes to assets -----------------
 
-    # @classmethod
-    # def bind(cls, obj, image_file_name):
-        # i = cls.get_image(image_file_name)
-        # if i is not None:
-            # cls.object_image_map.update(obj=i)
-        # else:
-            # raise ValueError("Missing image: " + cls.IMAGE_DIR + image_file_name)
     @classmethod
     def bind(cls, obj, image_file_name):
         i = cls.get_image(image_file_name)

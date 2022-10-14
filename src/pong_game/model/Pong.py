@@ -1,10 +1,8 @@
 # package pong.model
 from enum import Enum, auto
-from pong_game.event.ModelEvent import ModelEvent
-import pong_game.event.EventBus
 
 from pong_game.model.Ball import Ball
-from pong_game.model.Config import GAME_WIDTH
+from pong_game.model.Config import GAME_WIDTH, GAME_HEIGHT
 from pong_game.model.Paddle import Paddle
 
 class Pong:
@@ -25,88 +23,90 @@ class Pong:
         self.__points_left: int = 0
         self.__points_right: int = 0
         self.__last_hit: Pong.PaddleSide = Pong.PaddleSide.NONE
-        self.event = ""
+        self.event: str = ""
 
 
     # --------  Game Logic -------------
         # To avoid multiple collisions
 
         
-    def update(self, now):
+    def update(self):
         self.__paddle_right.move()
         self.__paddle_left.move()
         self.__move_the_ball()
-        self.check_collision_with_paddle()
-        self.check_if_out_bounds()
+        self.check_ball_collision_with_floor_and_ceiling()
+        self.check_ball_collision_with_paddle()
+        self.check_if_ball_out_of_bounds()
 
+    def check_ball_collision_with_floor_and_ceiling(self):
+        above_floor = self.__ball.get_y() > GAME_HEIGHT - self.__ball.get_height()
+        below_ceiling = 0 > self.__ball.get_y()
 
-    def check_if_out_bounds(self):
-        if 0 - self.__ball.get_width() > self.__ball.get_x():
+        if above_floor or below_ceiling:
+            self.__ball.bounce_on_walls()
+
+    def check_if_ball_out_of_bounds(self):
+        is_past_left_paddle = 0 - self.__ball.get_width() > self.__ball.get_x()
+        is_past_right_paddle = GAME_WIDTH < self.__ball.get_x()
+        
+        if is_past_left_paddle:
             self.__points_right += 1
             self.reset_ball()
         
-        elif GAME_WIDTH < self.__ball.get_x():
+        elif is_past_right_paddle:
             self.__points_left += 1
             self.reset_ball()
     
     def __move_the_ball(self):
         self.__ball.move() 
 
-          
-    def check_collision_with_paddle(self):
+    def check_ball_collision_with_paddle(self):
         is_at_left_paddle = self.__ball.get_x() < self.__paddle_left.get_x() + self.__paddle_left.get_width() < self.__ball.get_old_x()
         is_at_right_paddle = self.__ball.get_old_x() + self.__ball.get_width() < self.__paddle_right.get_x() < self.__ball.get_x() + self.__ball.get_width()
 
         if is_at_left_paddle:
-            is_not_over_paddle = self.__paddle_left.get_y() <= self.__ball.get_y() + self.__ball.get_height()
-            is_not_under_paddle = self.__paddle_left.get_y() + self.__paddle_left.get_height() >= self.__ball.get_y()
-            collides_with_paddle = is_not_under_paddle and is_not_over_paddle
+            is_not_over_paddle_left = self.__paddle_left.get_y() <= self.__ball.get_y() + self.__ball.get_height()
+            is_not_under_paddle_left = self.__paddle_left.get_y() + self.__paddle_left.get_height() >= self.__ball.get_y()
+            
+            collides_with_paddle = is_not_under_paddle_left and is_not_over_paddle_left
             
             if collides_with_paddle and self.__last_hit != Pong.PaddleSide.LEFT:
-                self.__last_hit = Pong.PaddleSide.LEFT
-                self.event = "ball_hit_paddle"
-
+                self.__last_hit = Pong.PaddleSide.LEFT        
                 self.__ball.set_x(self.__paddle_left.get_x() + self.__paddle_left.get_width())
-                self.__ball.accelerate()
-                self.__ball.bounce()
-
+                self.ball_hits_paddle()
 
         elif is_at_right_paddle:
-            is_not_under = self.__paddle_right.get_y() + self.__paddle_right.get_height() >= self.__ball.get_y()
-            collides_with_paddle = is_not_under and self.__paddle_right.get_y() <= self.__ball.get_y() + self.__ball.get_height()
+            is_not_under_right_paddle = self.__paddle_right.get_y() + self.__paddle_right.get_height() >= self.__ball.get_y()
+            is_not_over_right_paddle = self.__paddle_right.get_y() <= self.__ball.get_y() + self.__ball.get_height()
+
+            collides_with_paddle = is_not_under_right_paddle and is_not_over_right_paddle
 
             if collides_with_paddle and self.__last_hit != Pong.PaddleSide.RIGHT:
-                self.__last_hit = Pong.PaddleSide.RIGHT
-                self.event = "ball_hit_paddle"
-                
+                self.__last_hit = Pong.PaddleSide.RIGHT     
                 self.__ball.set_x(self.__paddle_right.get_x() - self.__ball.get_width())
-                self.__ball.accelerate()
-                self.__ball.bounce()
+                self.ball_hits_paddle()
 
+    def ball_hits_paddle(self) -> None:
+        self.event = "ball_hit_paddle"
+        self.__ball.accelerate()
+        self.__ball.bounce_on_paddle()
 
-    def reset_ball(self):
+    def reset_ball(self) -> None:
         self.__ball.reset_ball_pos()
         self.__ball.reset_direction()
         self.__ball.reset_speed()
         self.__last_hit = Pong.PaddleSide.NONE
 
     # --- Used by GUI  ------------------------
-    def get_all_items_with_position(self):
-        drawables = []
-        # TODO
-        return drawables
-
-    def get_points_left(self):
+    def get_points_left(self) -> int:
         return self.__points_left
 
-    def get_points_right(self):
+    def get_points_right(self) -> int:
         return self.__points_right
 
     def move_the_paddle(self, dy: int, paddle: str):
         if paddle == "right":
-            self.__paddle_right.set_direction(dy)
+            self.__paddle_right.set_paddle_direction(dy)
             
         elif paddle == "left":
-            self.__paddle_left.set_direction(dy)
-
-
+            self.__paddle_left.set_paddle_direction(dy)

@@ -1,54 +1,29 @@
 # package pong.model
 
 from pong_game.model.Config import GAME_HEIGHT
-from pong_game.model.HasPosition import HasPosition
 from pong_game.model.Moveable import Moveable
 
 # A Paddle for the Pong game
 class Paddle(Moveable):
+    PADDLE_HEIGHT = 60
+    PADDLE_WIDTH = 10
+
     def __init__(self, x) -> None:
-        super().__init__()
-        self.__WIDTH = 10
-        self.__HEIGHT = 60
-        self.__x = x
-        self.__y = self.__get_start_y()
+        super().__init__(x, y = self.get_start_y(), WIDTH = self.PADDLE_WIDTH, HEIGHT = self.PADDLE_HEIGHT, speed = 10)
         self.__direction = 0
-        self.__SPEED = 10
-    
-    def __get_start_y(self) -> int:
-        return int(GAME_HEIGHT / 2 - self.__HEIGHT / 2)
 
-    def get_x(self) -> int:
-        return self.__x
+    def get_start_y(self) -> int:
+        return int(GAME_HEIGHT / 2 - self.PADDLE_HEIGHT / 2)
 
-    def get_y(self) -> int:
-        return self.__y
-
-    def get_width(self) -> int:
-        return self.__WIDTH
-
-    def get_height(self) -> int:
-        return self.__HEIGHT
-    
     def get_paddle_direction(self) -> int:
         return self.__direction
 
     def set_paddle_direction(self, direction: int):
         self.__direction = direction
 
-
     def move(self):
-        if self.__direction == -1 and 0 < self.__y:
-            self.__y += self.__direction * self.__SPEED
+        below_ceiling = 0 < self.get_y()
+        above_floor = self.get_y() < GAME_HEIGHT - self.PADDLE_HEIGHT
 
-        elif self.__direction == 1 and self.__y < GAME_HEIGHT - self.get_height():
-            self.__y += self.__direction * self.__SPEED 
-    
-            
-    def set_direction(self, direction: int):
-        self.__direction = direction
-
-    def stop(self):
-        self.set_direction(0)
-
-
+        if (self.get_paddle_direction() == -1 and below_ceiling) or (self.get_paddle_direction() == 1 and above_floor):
+            self.set_y(self.get_y() + self.get_paddle_direction() * self.get_speed())

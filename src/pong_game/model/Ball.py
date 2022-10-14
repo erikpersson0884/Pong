@@ -1,7 +1,6 @@
 # package pong.model
 
 from pong_game.model.Config import GAME_WIDTH, GAME_HEIGHT
-from pong_game.model.HasPosition import HasPosition
 from random import uniform, choice, randint
 from math import sqrt
 from pong_game.model.Moveable import Moveable
@@ -11,50 +10,40 @@ from pong_game.model.Moveable import Moveable
  * A model class
 """
 
-
 class Ball(Moveable):
+    BALL_WIDTH = 40
+    BALL_HEIGHT = 40
+
     def __init__(self) -> None:
-        super().__init__()
-        self.__WIDTH = 40
-        self.__HEIGHT = 40
-        self.__x: int = self.__get_start_x()
-        self.__y: int = self.__get_start_y()
-        self.__old_x: float = self.__x
-
-        self.__dx = self.__get_start_dx()
-        self.__dy = self.__get_start_dy()
-
-        self.__speed = 8
-        self.__SPEED_FACTOR = 1.05 
+        super().__init__(x = self.__get_start_x(), y = self.__get_start_y(), WIDTH = self.BALL_WIDTH, HEIGHT = self.BALL_HEIGHT, speed = 10)
+        self.__old_x: float = self.get_x()
+        self.__dx: float = self.__get_start_dx()
+        self.__dy: float = self.__get_start_dy()
+        self.__SPEED_FACTOR: float = 1.05 
 
     def __get_start_x(self) -> int:
-        return int(GAME_WIDTH / 2 - self.get_width() / 2)
+        return int(GAME_WIDTH / 2 - self.BALL_WIDTH / 2)
 
     def __get_start_y(self) -> int:
-        return int(GAME_HEIGHT / 2 - self.get_height() / 2)
-
-    def __get_start_dx(self) -> float:
+        return int(GAME_HEIGHT / 2 - self.BALL_HEIGHT / 2)
+        
+    @staticmethod
+    def __get_start_dx() -> float:
         possible_directions = [uniform(-1, -1/sqrt(2)), uniform(1/sqrt(2), 1)]
         dx = choice(possible_directions)
         return dx
-
+    
     def __get_start_dy(self) -> float:
         return sqrt(1 - (self.__dx) ** 2)
-
-    def get_x(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
-        return self.__x
-
-    def get_y(self) -> float:
-        return self.__y
 
     def get_old_x(self) -> float:
         return self.__old_x
 
-    def get_width(self) -> int:
-        return self.__WIDTH
+    def get_dx(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
+        return self.__dx
 
-    def get_height(self) -> int:
-        return self.__HEIGHT
+    def get_dy(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
+        return self.__dy
 
 
     def set_dx(self, dx):
@@ -63,40 +52,29 @@ class Ball(Moveable):
     def set_dy(self, dy):
         self.__dy = dy
 
-    def set_x(self, x):
-        self.__x = x
 
-    def set_y(self, y):
-        self.__y = y
-
-    
     def move(self):
         self.__old_x = self.get_x()
-        self.set_x(self.get_x() + self.__dx * self.__speed)
-        self.set_y(self.get_y() + self.__dy * self.__speed)
+        self.set_x(self.get_x() + self.get_dx() * self.get_speed())
+        self.set_y(self.get_y() + self.get_dy() * self.get_speed())
 
-        if 0 > self.__y or self.__y > GAME_HEIGHT - self.get_height():
-            self.__dy *= -1
+
+    def bounce_on_paddle(self):
+        self.set_dx(self.get_dx() * (-1))
     
-    def reset_ball_pos(self):
-        self.__x = self.__get_start_x()
-        self.__y = self.__get_start_y()
-
-    def reset_speed(self):
-        self.__speed = randint(10, 15)
-    
-    def reset_direction(self):
-        self.__dx = self.__get_start_dx()
-        self.__dy = self.__get_start_dy()
-
-    def bounce(self):
-        self.__dx *= -1
+    def bounce_on_walls(self):
+        self.set_dy(self.get_dy() * (-1))
     
     def accelerate(self):
-        self.__speed *= self.__SPEED_FACTOR
+        self.set_speed(self.get_speed() * self.__SPEED_FACTOR)
+    
+    def reset_ball_pos(self):
+        self.set_x(self.__get_start_x())
+        self.set_y(self.__get_start_y())
 
-    def get_dx(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
-        return self.__dx
-        
-    def get_speed(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
-        return self.__speed
+    def reset_speed(self):
+        self.set_speed(randint(10, 15))
+    
+    def reset_direction(self):
+        self.set_dx(self.__get_start_dx())
+        self.set_dy(self.__get_start_dy())
