@@ -17,15 +17,15 @@ class Assets(ABC):
        *** Nothing to do here ***
     """
 
-    IMAGE_DIR = "assets/img/"
-    SOUND_DIR = "assets/sound/"
+    IMAGE_DIR = "../assets/img/"
+    SOUND_DIR = "../assets/sound/"
 
-    # För VS Code funkar IMAGE_DIR = "assets/img/" och "assets/sound/"
-
-    # För pycharm funkar "../assets/img/" and "../assets/sound/"
-    # Annars blir det FileNotFoundError: No file  found in working directory 
+    # For VS Code IMAGE_DIR = "assets/img/" and "assets/sound/" this works
+    # For pycharm "../assets/img/" and "../assets/sound/" this works
+    # Otherwise there will be a FileNotFoundError: No file  found in working directory
 
     # A Map to store which image belongs to which object
+    
     object_image_map = {}
 
     # ------------ Handling Colors and Images ------------------------

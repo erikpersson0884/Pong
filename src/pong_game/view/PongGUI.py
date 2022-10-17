@@ -1,4 +1,3 @@
-# package pong.view
 import pygame 
 
 from pong_game.event.EventHandler import EventHandler
@@ -37,7 +36,7 @@ class PongGUI:
         self.pong_model = Pong(self.ball, self.paddle_left, self.paddle_right)
 
         self.event_sound_handler = PongGUI.ModelEventHandler(self.assets)
-        self.points_font = pygame.font.SysFont("jokerman", 32)
+        self.points_font = pygame.font.SysFont(FONT, FONT_SIZE)
         self.clock = pygame.time.Clock()
 
 
@@ -93,8 +92,8 @@ class PongGUI:
 
     # ---------- Theme handling ------------------------------
 
-
-    def choose_theme(self) -> Cool | Duckie:
+    @staticmethod
+    def choose_theme() -> Cool | Duckie:
         while True:
             print("Current themes are Cool or Duckie")
             theme = input("Choose the theme: ").lower()
@@ -120,7 +119,7 @@ class PongGUI:
 
     def __draw_background(self):
         bg = self.assets.get_background()
-        bg = pygame.transform.scale(bg, (600, 400))
+        bg = pygame.transform.scale(bg, (GAME_WIDTH, GAME_HEIGHT))
         self.screen.blit(bg, (0, 0))
 
 
@@ -189,9 +188,9 @@ class PongGUI:
         if self.running == True:
             self.pong_model.update()
 
-        if self.pong_model.event == "ball_hit_paddle":
+        if self.pong_model.get_pong_sound_event() == "ball_hit_paddle":
             self.event_sound_handler.on_model_event(ModelEvent(ModelEvent.EventType.BALL_HIT_PADDLE))
-            self.pong_model.event = ""
+            self.pong_model.set_pong_sound_event("")
 
         self.render()
         

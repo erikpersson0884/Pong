@@ -23,7 +23,7 @@ class Pong:
         self.__points_left: int = 0
         self.__points_right: int = 0
         self.__last_hit: Pong.PaddleSide = Pong.PaddleSide.NONE
-        self.event: str = ""
+        self.__sound_event = ""
 
 
     # --------  Game Logic -------------
@@ -68,9 +68,9 @@ class Pong:
             is_not_over_paddle_left = self.__paddle_left.get_y() <= self.__ball.get_y() + self.__ball.get_height()
             is_not_under_paddle_left = self.__paddle_left.get_y() + self.__paddle_left.get_height() >= self.__ball.get_y()
             
-            collides_with_paddle = is_not_under_paddle_left and is_not_over_paddle_left
+            collides_with_paddle_left = is_not_under_paddle_left and is_not_over_paddle_left
             
-            if collides_with_paddle and self.__last_hit != Pong.PaddleSide.LEFT:
+            if collides_with_paddle_left and self.__last_hit != Pong.PaddleSide.LEFT:
                 self.__last_hit = Pong.PaddleSide.LEFT        
                 self.__ball.set_x(self.__paddle_left.get_x() + self.__paddle_left.get_width())
                 self.ball_hits_paddle()
@@ -79,15 +79,15 @@ class Pong:
             is_not_under_right_paddle = self.__paddle_right.get_y() + self.__paddle_right.get_height() >= self.__ball.get_y()
             is_not_over_right_paddle = self.__paddle_right.get_y() <= self.__ball.get_y() + self.__ball.get_height()
 
-            collides_with_paddle = is_not_under_right_paddle and is_not_over_right_paddle
+            collides_with_paddle_right = is_not_under_right_paddle and is_not_over_right_paddle
 
-            if collides_with_paddle and self.__last_hit != Pong.PaddleSide.RIGHT:
+            if collides_with_paddle_right and self.__last_hit != Pong.PaddleSide.RIGHT:
                 self.__last_hit = Pong.PaddleSide.RIGHT     
                 self.__ball.set_x(self.__paddle_right.get_x() - self.__ball.get_width())
                 self.ball_hits_paddle()
 
     def ball_hits_paddle(self) -> None:
-        self.event = "ball_hit_paddle"
+        self.__sound_event = "ball_hit_paddle"
         self.__ball.accelerate()
         self.__ball.bounce_on_paddle()
 
@@ -98,6 +98,12 @@ class Pong:
         self.__last_hit = Pong.PaddleSide.NONE
 
     # --- Used by GUI  ------------------------
+    def get_pong_sound_event(self) -> str:
+        return self.__sound_event
+
+    def set_pong_sound_event(self, sound_event: str) -> None:
+        self.__sound_event = sound_event
+
     def get_points_left(self) -> int:
         return self.__points_left
 

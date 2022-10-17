@@ -39,12 +39,11 @@ class Ball(Moveable):
     def get_old_x(self) -> float:
         return self.__old_x
 
-    def get_dx(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
+    def get_dx(self) -> float:      
         return self.__dx
 
-    def get_dy(self) -> float:      # Min x and y is upper left corner (y-axis pointing down)
+    def get_dy(self) -> float:      
         return self.__dy
-
 
     def set_dx(self, dx):
         self.__dx = dx
@@ -52,12 +51,10 @@ class Ball(Moveable):
     def set_dy(self, dy):
         self.__dy = dy
 
-
     def move(self):
         self.__old_x = self.get_x()
         self.set_x(self.get_x() + self.get_dx() * self.get_speed())
         self.set_y(self.get_y() + self.get_dy() * self.get_speed())
-
 
     def bounce_on_paddle(self):
         self.set_dx(self.get_dx() * (-1))
